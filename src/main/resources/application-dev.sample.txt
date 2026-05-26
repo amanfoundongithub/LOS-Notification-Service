@@ -1,0 +1,7 @@
+# Email credentials
+EMAIL_USERNAME:
+EMAIL_PASSWORD:
+
+# RabbitMQ credentials
+RABBITMQ_USERNAME:
+RABBITMQ_PASSWORD:

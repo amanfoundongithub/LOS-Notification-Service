@@ -20,11 +20,14 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-mongodb'
-	compileOnly 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-mail-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-mongodb-test'
-	testCompileOnly 'org.projectlombok:lombok'
+
+    testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 }

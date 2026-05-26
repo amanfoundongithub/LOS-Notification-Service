@@ -1,3 +1,55 @@
 spring:
   application:
-    name: notification_service
+    name: Notification Service
+
+  profiles:
+    active: dev
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        max-concurrency: 10
+        prefetch: 1
+        acknowledge-mode: manual
+        concurrency: 3
+        retry:
+          enabled: true
+          initial-interval: 2000ms
+          max-attempts: 3
+          max-interval: 10000ms
+          multiplier: 2.0
+          default-requeue-rejected: false
+    template:
+      retry:
+        enable: true
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/notificationService
+      auto-index-creation: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: true
+            required: true
+    default-encoding: UTF-8
+
+server:
+  port: 6300
