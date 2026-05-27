@@ -1,5 +1,7 @@
 package com.loan_org.notification_service.document;
 
+import com.loan_org.notification_service.domain.NotificationChannel;
+import com.loan_org.notification_service.domain.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,12 +30,17 @@ public class NotificationLogDocument {
     @Indexed
     private String userId;
     private String transactionId;
+
+    // Meta data on delivery of email
     private String recipient;
-    private String channel;      // EMAIL, SMS, PUSH
+    private NotificationChannel channel;
     private String templateCode;
 
+    // Email status
     @Indexed
-    private String status;       // PENDING, DELIVERED, FAILED, BLOCKED_BY_PREFERENCE
+    private NotificationStatus status;
+
+    // Priority of email
     private String priority;
 
     @Builder.Default
@@ -48,10 +55,12 @@ public class NotificationLogDocument {
 
     private Instant nextRetryAt;
 
+    // Error debugging for handy reference in DLQ
     private String providerReferenceId;
     private String errorCode;
     private String errorMessage;
 
+    // Template details for easy debugging and logging
     private String title;
     private String content;
     private Map<String, Object> templateVariables;
