@@ -1,6 +1,7 @@
 package com.loan_org.notification_service.document;
 
 import com.loan_org.notification_service.domain.NotificationChannel;
+import com.loan_org.notification_service.domain.NotificationPriority;
 import com.loan_org.notification_service.domain.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +42,7 @@ public class NotificationLogDocument {
     private NotificationStatus status;
 
     // Priority of email
-    private String priority;
+    private NotificationPriority priority;
 
     @Builder.Default
     private Instant createdAt = Instant.now();
