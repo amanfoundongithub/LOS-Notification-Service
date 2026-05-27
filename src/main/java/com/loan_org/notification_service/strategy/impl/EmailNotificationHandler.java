@@ -23,32 +23,21 @@ public class EmailNotificationHandler implements NotificationServiceHandler {
         log.info("Preparing live MIME message structure for transmission. Recipient: {}", logEntry.getRecipient());
 
         try {
-            // 1. Instantiate an empty MIME standard message wrapper
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-
-            // 2. Use MimeMessageHelper to safely configure encoding and content structures
-            // 'true' flag indicates this message framework supports multipart elements (like attachments or embedded HTML)
+            MimeMessage mimeMessage  = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setTo(logEntry.getRecipient());
             helper.setSubject(logEntry.getTitle() != null ? logEntry.getTitle() : "Account Update - LoanOrg");
             helper.setFrom("loanmanagementsystemadmin@gmail.com");
-
-            // 3. Inject fully compiled HTML template markup text natively
-            // Setting the second parameter 'true' explicitly forces the client to parse it as live HTML code instead of plaintext
             helper.setText(logEntry.getContent(), true);
 
-            // 4. Stream payload out over the network connection wire
             mailSender.send(mimeMessage);
 
-            // 5. Extract SMTP runtime identifier tokens or fall back onto a localized unique generation frame
             String providerReferenceId = mimeMessage.getMessageID() != null
                     ? mimeMessage.getMessageID()
                     : "smtp-msg-" + java.util.UUID.randomUUID().toString().substring(0, 8);
 
             log.info("Email successfully accepted by external SMTP relay node. Assigned Tracking ID: {}", providerReferenceId);
-
-            // 6. Update document log status to DELIVERED inside MongoDB
             logService.markAsDelivered(logEntry.getId(), providerReferenceId);
 
         } catch (Exception e) {
