@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -29,25 +31,31 @@ public class NotificationLogDocument {
     private String id;
 
     @Indexed
-    private String userId;
-    private String transactionId;
+    private String userId;        // userId lookup
 
-    // Meta data on delivery of email
+    @Indexed
+    private String transactionId; // id is required to keep logs of the transaction generator
+
+    // Notification actual values for the considered value
     private String recipient;
     private NotificationChannel channel;
+    private String title;
     private String templateCode;
+    private Map<String, Object> templateVariables;
 
-    // Email status
-    @Indexed
+    // Metadata related to delivery of email
+    private NotificationPriority priority;
+    private Instant sentAt;
     private NotificationStatus status;
 
-    // Priority of email
-    private NotificationPriority priority;
+    @CreatedDate
+    @Indexed(expireAfter = "30d")
+    private Instant createdAt;
 
-    @Builder.Default
-    private Instant createdAt = Instant.now();
-    private Instant sentAt;
+    @LastModifiedDate
+    private Instant updatedAt;
 
+    // Retry metadata
     @Builder.Default
     private int retryCount = 0;
 
@@ -61,11 +69,7 @@ public class NotificationLogDocument {
     private String errorCode;
     private String errorMessage;
 
-    // Template details for easy debugging and logging
-    private String title;
-    private String content;
-    private Map<String, Object> templateVariables;
-
     @Version
     private Long version;
+
 }
