@@ -1,9 +1,31 @@
+# ===================================================================
+# GLOBAL CONFIGURATION (Applies across all profiles)
+# ===================================================================
 spring:
   application:
     name: Notification Service
-
   profiles:
     active: dev
+
+server:
+  port: 6300
+
+---
+# ===================================================================
+# DEV PROFILE CONFIGURATION
+# ===================================================================
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  # --- FIXED: Added Explicit MongoDB Properties ---
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: notification_service
+      auto-index-creation: true
 
   rabbitmq:
     host: localhost
@@ -16,7 +38,6 @@ spring:
       simple:
         max-concurrency: 10
         prefetch: 1
-        acknowledge-mode: manual
         concurrency: 3
         retry:
           enabled: true
@@ -27,12 +48,7 @@ spring:
           default-requeue-rejected: false
     template:
       retry:
-        enable: true
-
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/notificationService
-      auto-index-creation: true
+        enabled: true  # Fixed typo: changed 'enable' to 'enabled'
 
   mail:
     host: smtp.gmail.com
@@ -50,6 +66,3 @@ spring:
             enable: true
             required: true
     default-encoding: UTF-8
-
-server:
-  port: 6300
