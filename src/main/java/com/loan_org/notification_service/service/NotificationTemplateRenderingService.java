@@ -5,8 +5,10 @@ import com.loan_org.notification_service.dto.RenderedEmail;
 import com.loan_org.notification_service.repository.NotificationTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.StringTemplateResolver;
+
 import java.util.Map;
 
 @Service
@@ -14,12 +16,14 @@ import java.util.Map;
 public class NotificationTemplateRenderingService {
 
     private final NotificationTemplateRepository templateRepository;
-    private final TemplateEngine mongoTemplateEngine;
+    private final SpringTemplateEngine mongoTemplateEngine;
 
     public RenderedEmail generateHtmlMessage(String templateCode, Map<String, Object> variables) {
         NotificationTemplateDocument template = templateRepository.findByTemplateCode(templateCode)
                 .orElseThrow(() -> new RuntimeException("Template not found for code: " + templateCode));
 
+        StringTemplateResolver stringResolver = new StringTemplateResolver();
+        this.mongoTemplateEngine.setTemplateResolver(stringResolver);
         Context context = new Context();
         context.setVariables(variables);
         String htmlBody = mongoTemplateEngine.process(template.getHtmlContent(), context);
