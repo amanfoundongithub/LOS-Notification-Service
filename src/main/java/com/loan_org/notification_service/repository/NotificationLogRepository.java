@@ -8,12 +8,13 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 public interface NotificationLogRepository extends MongoRepository<NotificationLogDocument, String> {
 
-    Page<NotificationLogDocument> findByUserIdOrderByCreatedAtDesc(String userId, Pageable pageable);
-    List<NotificationLogDocument> findByStatusAndNextRetryAtBefore(NotificationStatus status, Instant time);
-    NotificationLogDocument       findByProviderReferenceId(String providerReferenceId);
-    List<NotificationLogDocument> findByTransactionId(String transactionId);
+    Page<NotificationLogDocument>      findByUserId(String userId, Pageable pageable);
+    List<NotificationLogDocument>      findByStatusAndNextRetryAtBefore(NotificationStatus status, Instant time);
+    Optional<NotificationLogDocument>  findByProviderReferenceId(String providerReferenceId);
+    Optional<NotificationLogDocument>  findByTransactionId(String transactionId);
 
 }
