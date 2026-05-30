@@ -1,11 +1,11 @@
 package com.loan_org.notification_service.service;
 
-import com.loan_org.notification_service.config.RabbitMQConfig;
 import com.loan_org.notification_service.document.NotificationLogDocument;
 import com.loan_org.notification_service.domain.NotificationPriority;
 import com.loan_org.notification_service.domain.NotificationStatus;
 import com.loan_org.notification_service.dto.NotificationRequest;
 import com.loan_org.notification_service.repository.NotificationLogRepository;
+import com.loan_org.notification_service.strategy.NotificationDispatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,7 +19,7 @@ public class NotificationLogService {
 
     // Inject the services for logging and RabbitMQ
     private final NotificationLogRepository logRepository;
-    private final RabbitTemplate rabbitTemplate;
+    private final NotificationDispatcher dispatcher;
 
     /**
      * Initiates notification logging and request using external
@@ -42,7 +42,6 @@ public class NotificationLogService {
                 .templateCode(request.getTemplateCode())
                 .priority(request.getPriority())
                 .title(request.getTitle())
-                .content(request.getFallbackContent())                 // TODO: Use the template engine instead of fallback
                 .templateVariables(request.getTemplateVariables())
                 .status(NotificationStatus.PENDING)
                 .build();
@@ -52,19 +51,12 @@ public class NotificationLogService {
         log.info("Successfully persisted the record to MongoDB with id: {}! Sending message to the user now...",
                 logEntry.getId());
 
-        // TODO: Wire Preference Evaluation Engine here
-
         try {
             // Map to the queue
             String routingQueue = getQueue(request.getPriority());
 
-            // Dispatch out to the RabbitMQ
-            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, routingQueue, logEntry);
-
-            // Log the response
-            log.debug("Notification log ID {} successfully routed to AMQP exchange with key: {}",
-                    logEntry.getId(),
-                    routingQueue);
+            // Now we will dispatch the email
+            dispatcher.routeAndDispatch(request);
 
         } catch (Exception e) {
             log.error("Critical failure queuing notification log ID {} to RabbitMQ. Marking for downstream retry.",

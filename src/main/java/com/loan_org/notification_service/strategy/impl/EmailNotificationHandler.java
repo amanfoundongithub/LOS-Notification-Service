@@ -1,7 +1,8 @@
 package com.loan_org.notification_service.strategy.impl;
 
-import com.loan_org.notification_service.document.NotificationLogDocument;
-import com.loan_org.notification_service.service.NotificationLogService;
+import com.loan_org.notification_service.dto.NotificationRequest;
+import com.loan_org.notification_service.dto.RenderedEmail;
+import com.loan_org.notification_service.service.NotificationTemplateRenderingService;
 import com.loan_org.notification_service.strategy.NotificationServiceHandler;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -15,21 +16,23 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EmailNotificationHandler implements NotificationServiceHandler {
 
-    private final NotificationLogService logService;
     private final JavaMailSender mailSender;
+    private final NotificationTemplateRenderingService renderingService;
 
     @Override
-    public void dispatch(NotificationLogDocument logEntry) {
-        log.info("Preparing live MIME message structure for transmission. Recipient: {}", logEntry.getRecipient());
+    public void dispatch(NotificationRequest request) {
+        log.info("Preparing live MIME message structure for transmission. Recipient: {}", request.getRecipient());
 
         try {
             MimeMessage mimeMessage  = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            helper.setTo(logEntry.getRecipient());
-            helper.setSubject(logEntry.getTitle() != null ? logEntry.getTitle() : "Account Update - LoanOrg");
+            helper.setTo(request.getRecipient());
+
+            RenderedEmail emailElements = renderingService.generateHtmlMessage(request.getTemplateCode(), request.getTemplateVariables());
+            helper.setSubject(emailElements.subject());
             helper.setFrom("loanmanagementsystemadmin@gmail.com");
-            helper.setText(logEntry.getContent(), true);
+            helper.setText(emailElements.body(), true);
 
             mailSender.send(mimeMessage);
 
@@ -38,10 +41,10 @@ public class EmailNotificationHandler implements NotificationServiceHandler {
                     : "smtp-msg-" + java.util.UUID.randomUUID().toString().substring(0, 8);
 
             log.info("Email successfully accepted by external SMTP relay node. Assigned Tracking ID: {}", providerReferenceId);
-            logService.markAsDelivered(logEntry.getId(), providerReferenceId);
+//            logService.markAsDelivered(request.getTraceId(), providerReferenceId);
 
         } catch (Exception e) {
-            log.error("SMTP transport subsystem network transmission failure for log ID: {}", logEntry.getId(), e);
+            log.error("SMTP transport subsystem network transmission failure for log ID: {}", request.getTraceId(), e);
             // Re-throwing forces the AMQP consumer loop to fail, pushing the record automatically down your DLX/DLQ retry topology
             throw new RuntimeException("External Email delivery network pipeline failure", e);
         }

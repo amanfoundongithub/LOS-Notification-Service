@@ -1,6 +1,6 @@
 package com.loan_org.notification_service.strategy;
 
-import com.loan_org.notification_service.document.NotificationLogDocument;
+import com.loan_org.notification_service.dto.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import java.util.List;
@@ -28,15 +28,15 @@ public class NotificationDispatcher {
     /**
      * Routes the fully compiled message to its matching infrastructure gateway provider.
      */
-    public void routeAndDispatch(NotificationLogDocument logEntry) {
-        String channel = logEntry.getChannel().toString().toUpperCase();
+    public void routeAndDispatch(NotificationRequest request) {
+        String channel = request.getChannel().toString().toUpperCase();
         NotificationServiceHandler handler = strategyMap.get(channel);
 
         if (handler == null) {
-            log.error("Unsupported channel configuration format: '{}' for log ID: {}", channel, logEntry.getId());
+            log.error("Unsupported channel configuration format: '{}' for trace ID: {}", channel, request.getTraceId());
             throw new IllegalArgumentException("No concrete provider strategy registered for channel: " + channel);
         }
 
-        handler.dispatch(logEntry);
+        handler.dispatch(request);
     }
 }
