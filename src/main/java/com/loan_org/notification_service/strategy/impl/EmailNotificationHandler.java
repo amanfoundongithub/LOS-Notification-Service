@@ -41,7 +41,6 @@ public class EmailNotificationHandler implements NotificationServiceHandler {
                     : "smtp-msg-" + java.util.UUID.randomUUID().toString().substring(0, 8);
 
             log.info("Email successfully accepted by external SMTP relay node. Assigned Tracking ID: {}", providerReferenceId);
-//            logService.markAsDelivered(request.getTraceId(), providerReferenceId);
 
         } catch (Exception e) {
             log.error("SMTP transport subsystem network transmission failure for log ID: {}", request.getTraceId(), e);
