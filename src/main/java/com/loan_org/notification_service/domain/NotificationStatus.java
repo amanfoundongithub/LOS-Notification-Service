@@ -1,5 +1,24 @@
 package com.loan_org.notification_service.domain;
 
+/**
+ * Defines the state machine lifecycle boundaries for outbound communications.
+ * <p>These statuses track message progression from initial ingestion to downstream
+ * delivery, facilitating transactional state tracking, automated retry eligibility
+ * evaluations, and terminal auditing records.</p>
+ *
+ * <h3>State Transitions Flow:</h3>
+ * <pre>
+ * PENDING ──► PROCESSING ──► DELIVERED
+ * │
+ * ├──► RETRYING ──► ABANDONED (Max Retries Exhausted)
+ * │
+ * ├──► FAILED (Hard Error)
+ * └──► BLOCKED_BY_PREFERENCE
+ * </pre>
+ *
+ * @author amanfoundongithub
+ * @version 1.0.0
+ */
 public enum NotificationStatus {
     /** The notification has been created and is waiting in a RabbitMQ queue. */
     PENDING,
