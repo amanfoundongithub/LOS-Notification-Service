@@ -1,6 +1,8 @@
 package com.loan_org.notification_service.amqp;
 
 import com.loan_org.notification_service.config.RabbitMQConfig;
+import com.loan_org.notification_service.config.amqp.RabbitMdcConfig;
+import com.loan_org.notification_service.config.amqp.RabbitMdcHandshakeProcessor;
 import com.loan_org.notification_service.dto.NotificationRequest;
 import com.loan_org.notification_service.service.NotificationInitiatorService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,8 @@ public class NotificationMessageConsumer {
         } catch (Exception e) {
             log.error("Failed executing message delivery route for log ID: {}", message.getTraceId(), e);
             throw e; // Re-throw to trigger your Dead Letter Queue configuration!
+        } finally {
+            RabbitMdcHandshakeProcessor.clearMdc();
         }
     }
 }
