@@ -1,25 +1,9 @@
-# ===================================================================
-# GLOBAL CONFIGURATION (Applies across all profiles)
-# ===================================================================
 spring:
   application:
     name: Notification Service
   profiles:
     active: dev
 
-server:
-  port: 6300
-
----
-# ===================================================================
-# DEV PROFILE CONFIGURATION
-# ===================================================================
-spring:
-  config:
-    activate:
-      on-profile: dev
-
-  # --- FIXED: Added Explicit MongoDB Properties ---
   data:
     mongodb:
       host: localhost
@@ -48,7 +32,7 @@ spring:
           default-requeue-rejected: false
     template:
       retry:
-        enabled: true  # Fixed typo: changed 'enable' to 'enabled'
+        enabled: true
 
   mail:
     host: smtp.gmail.com
@@ -66,3 +50,6 @@ spring:
             enable: true
             required: true
     default-encoding: UTF-8
+
+server:
+  port: 6300
