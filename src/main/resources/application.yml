@@ -51,5 +51,13 @@ spring:
             required: true
     default-encoding: UTF-8
 
+mdc:
+  traceId: "traceId"
+  traceHeader: "X-Trace-Id"
+
 server:
   port: 6300
+
+logging:
+  pattern:
+    console: "{\"timestamp\":\"%d{yyyy-MM-dd HH:mm:ss.SSS}\",\"level\":\"%level\",\"thread\":\"%thread\",\"logger\":\"%logger\",\"message\":\"%msg\",\"traceId\":\"%X{traceId}\"}%n"
