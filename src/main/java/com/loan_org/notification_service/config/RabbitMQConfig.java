@@ -133,7 +133,7 @@ public class RabbitMQConfig {
             }
             if (traceId == null) {
                 traceId = UUID.randomUUID().toString();
-                log.warn("[MDC] No traceId found in incoming AMQP headers. Generated fallback: {}", traceId);
+                log.warn("[AMQP][MDC] No traceId found in incoming AMQP message. Generated traceId: {}. Keep this handy for reference", traceId);
             }
             MDC.put(RABBITMQ_MDC_KEY, traceId);
             try {
