@@ -19,7 +19,7 @@ public class MdcInterceptor implements HandlerInterceptor {
         String traceId = request.getHeader(RabbitMQConfig.RABBITMQ_MDC_HEADER);
         if(traceId == null || traceId.isBlank()) {
             traceId = UUID.randomUUID().toString();
-            log.warn("[MDC][WARNING] No traceId found for this request. The request will be processed with " +
+            log.warn("[HTTP][MDC] No traceId found for this request. The request will be processed with " +
                             "the following traceId: {}. This traceId can be found in the header: {}." +
                             "However, keep one for handy reference for request.",
                     traceId,
