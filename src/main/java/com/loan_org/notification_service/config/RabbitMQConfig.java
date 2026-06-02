@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.config.amqp;
+package com.loan_org.notification_service.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.loan_org.notification_service.amqp;
 
-import com.loan_org.notification_service.config.amqp.RabbitMQConfig;
+import com.loan_org.notification_service.config.RabbitMQConfig;
 import com.loan_org.notification_service.dto.NotificationRequest;
 import com.loan_org.notification_service.service.NotificationInitiatorService;
 import lombok.RequiredArgsConstructor;
