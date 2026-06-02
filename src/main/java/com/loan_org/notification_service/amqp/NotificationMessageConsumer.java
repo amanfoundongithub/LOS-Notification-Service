@@ -20,8 +20,7 @@ public class NotificationMessageConsumer {
             containerFactory = "highPriorityListenerFactory"
     )
     public void consumeHighPriorityMessage(NotificationRequest message) {
-        log.info("Received HIGH priority notification from queue. Log ID: {}", message.getTraceId());
-        processMessage(message);
+        processMessage(message, "HIGH");
     }
 
     @RabbitListener(
@@ -29,8 +28,7 @@ public class NotificationMessageConsumer {
             containerFactory = "defaultPriorityListenerFactory"
     )
     public void consumeMediumPriorityMessage(NotificationRequest message) {
-        log.info("Received MEDIUM priority notification from queue. Log ID: {}", message.getTraceId());
-        processMessage(message);
+        processMessage(message, "DEFAULT");
     }
 
     @RabbitListener(
@@ -38,17 +36,28 @@ public class NotificationMessageConsumer {
             containerFactory = "bulkPriorityListenerFactory"
     )
     public void consumeLowPriorityMessage(NotificationRequest message) {
-        log.info("Received LOW priority notification from queue. Log ID: {}", message.getTraceId());
-        processMessage(message);
+        processMessage(message, "LOW");
     }
 
-    private void processMessage(NotificationRequest message) {
+    private void processMessage(NotificationRequest message, String priority) {
+        log.info("[AMQP Ingestion] Received {} notification request. Channel: {}, Template: {}, Recipient: {}",
+                priority,
+                message.getChannel(),
+                message.getTemplateCode(),
+                maskRecipient(message.getRecipient()));
         try {
-            log.info("Received request for processing...");
             notificationInitiatorService.start(message);
         } catch (Exception e) {
-            log.error("Failed executing message delivery route for log ID: {}", message.getTraceId(), e);
-            throw e; // Re-throw to trigger your Dead Letter Queue configuration!
+            log.error("[AMQP ERROR] Route execution failed. Escalating message directly to DLX.", e);
+            throw e;
         }
+    }
+
+    private String maskRecipient(String recipient) {
+        if (recipient == null) return "UNKNOWN";
+        if (recipient.contains("@")) {
+            return recipient.replaceAll("(?<=.).(?=[^@]*?.@)", "*");
+        }
+        return recipient.length() > 4 ? "*".repeat(recipient.length() - 4) + recipient.substring(recipient.length() - 4) : recipient;
     }
 }
