@@ -6,9 +6,11 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 @Configuration
-public class ThymeleafMongoConfig {
+public class ThymeLeafMongoConfig {
 
-    @Bean
+    public static final String MONGO_TEMPLATE_ENGINE_BEAN = "mongoTemplateEngine";
+
+    @Bean(name = MONGO_TEMPLATE_ENGINE_BEAN)
     public TemplateEngine mongoTemplateEngine() {
         TemplateEngine engine = new TemplateEngine();
 
