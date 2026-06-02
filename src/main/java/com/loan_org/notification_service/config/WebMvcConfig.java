@@ -1,5 +1,6 @@
-package com.loan_org.notification_service.config.mvc;
+package com.loan_org.notification_service.config;
 
+import com.loan_org.notification_service.shared.util.MdcInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
