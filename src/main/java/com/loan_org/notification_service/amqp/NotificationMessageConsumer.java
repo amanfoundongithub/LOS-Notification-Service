@@ -1,8 +1,6 @@
 package com.loan_org.notification_service.amqp;
 
-import com.loan_org.notification_service.config.RabbitMQConfig;
-import com.loan_org.notification_service.config.amqp.RabbitMdcConfig;
-import com.loan_org.notification_service.config.amqp.RabbitMdcHandshakeProcessor;
+import com.loan_org.notification_service.config.amqp.RabbitMQConfig;
 import com.loan_org.notification_service.dto.NotificationRequest;
 import com.loan_org.notification_service.service.NotificationInitiatorService;
 import lombok.RequiredArgsConstructor;
@@ -17,19 +15,28 @@ public class NotificationMessageConsumer {
 
     private final NotificationInitiatorService notificationInitiatorService;
 
-    @RabbitListener(queues = RabbitMQConfig.HIGH_PRIORITY_QUEUE)
+    @RabbitListener(
+            queues = RabbitMQConfig.HIGH_PRIORITY_QUEUE,
+            containerFactory = "highPriorityListenerFactory"
+    )
     public void consumeHighPriorityMessage(NotificationRequest message) {
         log.info("Received HIGH priority notification from queue. Log ID: {}", message.getTraceId());
         processMessage(message);
     }
 
-    @RabbitListener(queues = RabbitMQConfig.DEFAULT_PRIORITY_QUEUE)
+    @RabbitListener(
+            queues = RabbitMQConfig.DEFAULT_PRIORITY_QUEUE,
+            containerFactory = "defaultPriorityListenerFactory"
+    )
     public void consumeMediumPriorityMessage(NotificationRequest message) {
         log.info("Received MEDIUM priority notification from queue. Log ID: {}", message.getTraceId());
         processMessage(message);
     }
 
-    @RabbitListener(queues = RabbitMQConfig.BULK_PRIORITY_QUEUE)
+    @RabbitListener(
+            queues = RabbitMQConfig.BULK_PRIORITY_QUEUE,
+            containerFactory = "bulkPriorityListenerFactory"
+    )
     public void consumeLowPriorityMessage(NotificationRequest message) {
         log.info("Received LOW priority notification from queue. Log ID: {}", message.getTraceId());
         processMessage(message);
@@ -42,8 +49,6 @@ public class NotificationMessageConsumer {
         } catch (Exception e) {
             log.error("Failed executing message delivery route for log ID: {}", message.getTraceId(), e);
             throw e; // Re-throw to trigger your Dead Letter Queue configuration!
-        } finally {
-            RabbitMdcHandshakeProcessor.clearMdc();
         }
     }
 }
