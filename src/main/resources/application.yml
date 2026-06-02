@@ -51,6 +51,9 @@ spring:
             required: true
     default-encoding: UTF-8
 
+  thymeleaf:
+    check-template-location: false
+
 mdc:
   traceId: "traceId"
   traceHeader: "X-Trace-Id"
