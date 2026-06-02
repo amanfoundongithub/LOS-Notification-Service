@@ -149,15 +149,8 @@ public class RabbitMQConfig {
             ConnectionFactory connectionFactory,
             Jackson2JsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
-        factory.setMessageConverter(converter);
-        factory.setAdviceChain(amqpMdcInterceptor);
-        factory.setConcurrentConsumers(5);
-        factory.setMaxConcurrentConsumers(10);
-        factory.setPrefetchCount(1);
-        factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
-        return factory;
+        SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
+        return configureSizing(factory, 5, 10, 1);
     }
 
     @Bean
@@ -165,15 +158,8 @@ public class RabbitMQConfig {
             ConnectionFactory connectionFactory,
             Jackson2JsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
-        factory.setMessageConverter(converter);
-        factory.setAdviceChain(amqpMdcInterceptor);
-        factory.setConcurrentConsumers(2);
-        factory.setMaxConcurrentConsumers(5);
-        factory.setPrefetchCount(5);
-        factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
-        return factory;
+        SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
+        return configureSizing(factory, 2, 5, 5);
     }
 
     @Bean
@@ -181,14 +167,31 @@ public class RabbitMQConfig {
             ConnectionFactory connectionFactory,
             Jackson2JsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
+        SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
+        return configureSizing(factory, 1, 2, 20);
+    }
+
+    private SimpleRabbitListenerContainerFactory createBasicFactory(
+            ConnectionFactory connectionFactory,
+            Jackson2JsonMessageConverter converter,
+            MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(converter);
         factory.setAdviceChain(amqpMdcInterceptor);
-        factory.setConcurrentConsumers(1);
-        factory.setMaxConcurrentConsumers(2);
-        factory.setPrefetchCount(20);
         factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        return factory;
+    }
+
+    private SimpleRabbitListenerContainerFactory configureSizing(
+            SimpleRabbitListenerContainerFactory factory,
+            int concurrentConsumers,
+            int maxConcurrentConsumers,
+            int preFetchCount
+    ) {
+        factory.setConcurrentConsumers(concurrentConsumers);
+        factory.setMaxConcurrentConsumers(maxConcurrentConsumers);
+        factory.setPrefetchCount(preFetchCount);
         return factory;
     }
 }
