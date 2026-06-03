@@ -41,15 +41,19 @@ public class NotificationLogServiceImpl implements NotificationLogService {
                 .orElseThrow(() -> new RecordNotFoundException("notificationLogs", id));
     }
 
+    // FIX: Changed return type from void to NotificationLogDocument
     @Override
-    public void updateRetryTelemetry(String id, int currentRetryCount, long upcomingDelayMs) {
-        logRepository.findById(id).ifPresent(record -> {
-            record.setRetryCount(currentRetryCount);
-            record.setNextRetryAt(Instant.now().plusMillis(upcomingDelayMs));
-            record.setStatus(NotificationStatus.PENDING);
-            logRepository.save(record);
-            log.debug("[AUDIT][TELEMETRY] Incremented retry metrics count to {} for MongoID: {}", currentRetryCount, id);
-        });
+    public NotificationLogDocument updateRetryTelemetry(String id, int currentRetryCount, long upcomingDelayMs) {
+        return logRepository.findById(id)
+                .map(record -> {
+                    record.setRetryCount(currentRetryCount);
+                    record.setNextRetryAt(Instant.now().plusMillis(upcomingDelayMs));
+                    record.setStatus(NotificationStatus.PENDING);
+                    NotificationLogDocument updatedRecord = logRepository.save(record);
+                    log.debug("[AUDIT][TELEMETRY] Incremented retry metrics count to {} for MongoID: {}", currentRetryCount, id);
+                    return updatedRecord;
+                })
+                .orElseThrow(() -> new RecordNotFoundException("notificationLogs", id));
     }
 
     @Override
@@ -73,8 +77,4 @@ public class NotificationLogServiceImpl implements NotificationLogService {
             logRepository.save(record);
         });
     }
-
-
-
-
 }

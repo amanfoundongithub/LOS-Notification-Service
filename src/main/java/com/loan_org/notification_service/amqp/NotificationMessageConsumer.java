@@ -49,7 +49,6 @@ public class NotificationMessageConsumer {
             notificationService.execute(message);
         } catch (Exception e) {
             log.error("[AMQP ERROR] Route execution failed. Escalating message directly to DLX.", e);
-            throw e;
         }
     }
 

@@ -42,7 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
         while (currentAttempts <= maxAttempts) {
             try {
                 if (currentAttempts > 0) {
-                    logService.updateRetryTelemetry(logEntry.getId(),
+                    logEntry = logService.updateRetryTelemetry(logEntry.getId(),
                             currentAttempts, backoffDelay);
                 }
 

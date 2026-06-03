@@ -23,16 +23,7 @@ spring:
         max-concurrency: 10
         prefetch: 1
         concurrency: 3
-        retry:
-          enabled: true
-          initial-interval: 2000ms
-          max-attempts: 3
-          max-interval: 10000ms
-          multiplier: 2.0
-          default-requeue-rejected: false
-    template:
-      retry:
-        enabled: true
+        default-requeue-rejected: false
 
   mail:
     host: smtp.gmail.com

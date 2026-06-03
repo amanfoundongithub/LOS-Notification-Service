@@ -31,6 +31,7 @@ public class EmailNotificationChannelHandler implements NotificationChannelHandl
         log.info("[EMAIL][INIT] Starting email dispatch service via SMTP. Recipient: {}", MaskingUtil.maskEmail(request.getRecipient()));
 
         try {
+            request.setRecipient(null);
             MimeMessage mimeMessage  = mailSender.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
