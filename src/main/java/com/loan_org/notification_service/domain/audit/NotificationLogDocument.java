@@ -1,8 +1,8 @@
-package com.loan_org.notification_service.document;
+package com.loan_org.notification_service.domain.audit;
 
-import com.loan_org.notification_service.domain.NotificationChannel;
-import com.loan_org.notification_service.domain.NotificationPriority;
-import com.loan_org.notification_service.domain.NotificationStatus;
+import com.loan_org.notification_service.domain.channels.NotificationChannel;
+import com.loan_org.notification_service.shared.model.NotificationPriority;
+import com.loan_org.notification_service.shared.model.NotificationStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

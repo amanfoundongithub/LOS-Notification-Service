@@ -1,7 +1,6 @@
-package com.loan_org.notification_service.repository;
+package com.loan_org.notification_service.domain.audit;
 
-import com.loan_org.notification_service.document.NotificationLogDocument;
-import com.loan_org.notification_service.domain.NotificationStatus;
+import com.loan_org.notification_service.shared.model.NotificationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

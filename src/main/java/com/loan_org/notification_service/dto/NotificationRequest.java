@@ -1,7 +1,7 @@
 package com.loan_org.notification_service.dto;
 
-import com.loan_org.notification_service.domain.NotificationChannel;
-import com.loan_org.notification_service.domain.NotificationPriority;
+import com.loan_org.notification_service.domain.channels.NotificationChannel;
+import com.loan_org.notification_service.shared.model.NotificationPriority;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,9 +18,6 @@ import java.util.Map;
 public class NotificationRequest {
 
     private String userId;
-
-    @NotBlank(message = "Trace ID is required for logging visibility")
-    private String traceId;
 
     @NotBlank(message = "Transaction ID is required for idempotency protection")
     private String transactionId;

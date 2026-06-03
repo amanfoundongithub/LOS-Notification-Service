@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.document;
+package com.loan_org.notification_service.domain.template;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,6 +54,7 @@ public class NotificationTemplateDocument {
     private Instant updatedAt;
 
     @Version
-    private Long version;
+    @Builder.Default
+    private Long version = 0L;
 
 }

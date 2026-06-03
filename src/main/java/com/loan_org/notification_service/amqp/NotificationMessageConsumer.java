@@ -2,7 +2,7 @@ package com.loan_org.notification_service.amqp;
 
 import com.loan_org.notification_service.config.RabbitMQConfig;
 import com.loan_org.notification_service.dto.NotificationRequest;
-import com.loan_org.notification_service.service.NotificationInitiatorService;
+import com.loan_org.notification_service.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationMessageConsumer {
 
-    private final NotificationInitiatorService notificationInitiatorService;
+    private final NotificationService notificationService;
 
     @RabbitListener(
             queues = RabbitMQConfig.HIGH_PRIORITY_QUEUE,
@@ -46,7 +46,7 @@ public class NotificationMessageConsumer {
                 message.getTemplateCode(),
                 maskRecipient(message.getRecipient()));
         try {
-            notificationInitiatorService.start(message);
+            notificationService.execute(message);
         } catch (Exception e) {
             log.error("[AMQP ERROR] Route execution failed. Escalating message directly to DLX.", e);
             throw e;

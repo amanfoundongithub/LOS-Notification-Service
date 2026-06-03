@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.abcd;
+package com.loan_org.notification_service.domain.channels;
 
 import java.util.Arrays;
 

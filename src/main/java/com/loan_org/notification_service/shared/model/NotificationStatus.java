@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.abcd;
+package com.loan_org.notification_service.shared.model;
 
 /**
  * Defines the state machine lifecycle boundaries for outbound communications.
