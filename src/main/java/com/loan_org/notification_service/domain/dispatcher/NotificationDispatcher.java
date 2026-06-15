@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.domain.delivery;
+package com.loan_org.notification_service.domain.dispatcher;
 
 import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
 

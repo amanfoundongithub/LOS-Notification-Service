@@ -2,7 +2,7 @@ package com.loan_org.notification_service.delivery_service.service.impl;
 
 import com.loan_org.notification_service.domain.audit.entity.NotificationLogDocument;
 import com.loan_org.notification_service.domain.audit.service.NotificationLogService;
-import com.loan_org.notification_service.domain.delivery.NotificationDispatcher;
+import com.loan_org.notification_service.domain.dispatcher.NotificationDispatcher;
 import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
 import com.loan_org.notification_service.delivery_service.service.NotificationDeliveryService;
 import lombok.RequiredArgsConstructor;

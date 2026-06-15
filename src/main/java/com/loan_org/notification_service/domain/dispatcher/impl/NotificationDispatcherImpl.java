@@ -1,7 +1,7 @@
-package com.loan_org.notification_service.domain.delivery.impl;
+package com.loan_org.notification_service.domain.dispatcher.impl;
 
-import com.loan_org.notification_service.domain.delivery.channels.NotificationChannelHandler;
-import com.loan_org.notification_service.domain.delivery.NotificationDispatcher;
+import com.loan_org.notification_service.domain.dispatcher.channels.NotificationChannelHandler;
+import com.loan_org.notification_service.domain.dispatcher.NotificationDispatcher;
 import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
 import com.loan_org.notification_service.shared.exception.channel.ChannelNotPresentException;
 import com.loan_org.notification_service.shared.exception.channel.ChannelNotSupportedException;

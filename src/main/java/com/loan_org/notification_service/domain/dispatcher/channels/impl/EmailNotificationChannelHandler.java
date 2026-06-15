@@ -1,10 +1,10 @@
-package com.loan_org.notification_service.domain.delivery.channels.impl;
+package com.loan_org.notification_service.domain.dispatcher.channels.impl;
 
-import com.loan_org.notification_service.domain.delivery.channels.NotificationChannel;
+import com.loan_org.notification_service.domain.dispatcher.channels.NotificationChannel;
 import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
 import com.loan_org.notification_service.domain.template.dto.RenderedEmail;
 import com.loan_org.notification_service.domain.template.service.NotificationTemplateRenderingService;
-import com.loan_org.notification_service.domain.delivery.channels.NotificationChannelHandler;
+import com.loan_org.notification_service.domain.dispatcher.channels.NotificationChannelHandler;
 import com.loan_org.notification_service.shared.exception.channel.EmailDeliveryFailureException;
 import com.loan_org.notification_service.shared.util.MaskingUtil;
 import jakarta.mail.internet.MimeMessage;
