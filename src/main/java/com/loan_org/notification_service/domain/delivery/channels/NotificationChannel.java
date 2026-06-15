@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.domain.channels;
+package com.loan_org.notification_service.domain.delivery.channels;
 
 import java.util.Arrays;
 

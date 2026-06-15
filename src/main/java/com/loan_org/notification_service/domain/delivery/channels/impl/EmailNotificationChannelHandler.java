@@ -1,10 +1,10 @@
-package com.loan_org.notification_service.domain.channels.impl;
+package com.loan_org.notification_service.domain.delivery.channels.impl;
 
-import com.loan_org.notification_service.domain.channels.NotificationChannel;
+import com.loan_org.notification_service.domain.delivery.channels.NotificationChannel;
 import com.loan_org.notification_service.dto.NotificationRequest;
 import com.loan_org.notification_service.dto.RenderedEmail;
 import com.loan_org.notification_service.domain.template.NotificationTemplateRenderingService;
-import com.loan_org.notification_service.domain.channels.NotificationChannelHandler;
+import com.loan_org.notification_service.domain.delivery.channels.NotificationChannelHandler;
 import com.loan_org.notification_service.shared.exception.channel.EmailDeliveryFailureException;
 import com.loan_org.notification_service.shared.util.MaskingUtil;
 import jakarta.mail.internet.MimeMessage;
@@ -28,7 +28,8 @@ public class EmailNotificationChannelHandler implements NotificationChannelHandl
 
     @Override
     public String dispatch(NotificationRequest request) {
-        log.info("[EMAIL][INIT] Starting email dispatch service via SMTP. Recipient: {}", MaskingUtil.maskEmail(request.getRecipient()));
+        log.info("Starting email dispatch service via SMTP. Recipient: {}",
+                MaskingUtil.maskRecipient(request.getRecipient(), request.getChannel()));
 
         try {
             MimeMessage mimeMessage  = mailSender.createMimeMessage();
@@ -47,10 +48,10 @@ public class EmailNotificationChannelHandler implements NotificationChannelHandl
                     ? mimeMessage.getMessageID()
                     : "smtp-msg-" + java.util.UUID.randomUUID().toString().substring(0, 8);
 
-            log.info("[EMAIL][SUCCESS] Email has been sent successfully. Assigned Tracking ID: {}", providerReferenceId);
+            log.info("Email has been sent successfully. Assigned Tracking ID: {}", providerReferenceId);
             return providerReferenceId;
         } catch (Exception e) {
-            log.error("[EMAIL][ERROR] SMTP transport subsystem network transmission failure. Reason: {}", e.getMessage());
+            log.error("Failure in delivery of email via SMTP transport. Reason: {}", e.getMessage());
             throw new EmailDeliveryFailureException(request.getRecipient(), e);
         }
     }
