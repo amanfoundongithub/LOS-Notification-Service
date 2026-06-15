@@ -3,7 +3,7 @@ package com.loan_org.notification_service.domain.delivery.channels.impl;
 import com.loan_org.notification_service.domain.delivery.channels.NotificationChannel;
 import com.loan_org.notification_service.dto.NotificationRequest;
 import com.loan_org.notification_service.dto.RenderedEmail;
-import com.loan_org.notification_service.domain.template.NotificationTemplateRenderingService;
+import com.loan_org.notification_service.domain.template.service.NotificationTemplateRenderingService;
 import com.loan_org.notification_service.domain.delivery.channels.NotificationChannelHandler;
 import com.loan_org.notification_service.shared.exception.channel.EmailDeliveryFailureException;
 import com.loan_org.notification_service.shared.util.MaskingUtil;
