@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.domain.template;
+package com.loan_org.notification_service.domain.template.service;
 
 import com.loan_org.notification_service.dto.RenderedEmail;
 import java.util.Map;
