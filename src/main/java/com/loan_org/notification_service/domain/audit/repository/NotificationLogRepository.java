@@ -1,5 +1,6 @@
-package com.loan_org.notification_service.domain.audit;
+package com.loan_org.notification_service.domain.audit.repository;
 
+import com.loan_org.notification_service.domain.audit.entity.NotificationLogDocument;
 import com.loan_org.notification_service.shared.model.NotificationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
