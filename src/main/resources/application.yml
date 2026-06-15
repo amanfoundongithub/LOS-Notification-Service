@@ -50,6 +50,22 @@ mdc:
   traceId: "traceId"
   traceHeader: "X-Trace-Id"
 
+# Configure the channels for RabbitMQ listener
+listener:
+  factory:
+    high:
+      concurrentConsumers: 5
+      maxConcurrentConsumers: 10
+      preFetchCount: 1
+    medium:
+      concurrentConsumers: 2
+      maxConcurrentConsumers: 5
+      preFetchCount: 5
+    low:
+      concurrentConsumers: 1
+      maxConcurrentConsumers: 2
+      preFetchCount: 20
+
 server:
   port: 6300
 
