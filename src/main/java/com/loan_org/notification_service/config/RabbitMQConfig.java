@@ -1,5 +1,6 @@
 package com.loan_org.notification_service.config;
 
+import com.loan_org.notification_service.config.properties.RabbitMQListenerFactoryProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -17,6 +18,9 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class RabbitMQConfig {
+
+    // --- RabbitMQ Configuration of factory listeners
+    private final RabbitMQListenerFactoryProperties rabbitMQListenerFactoryProperties;
 
     // --- Core Exchanges ---
     public static final String EXCHANGE_NAME = "notification.exchange";
@@ -144,7 +148,10 @@ public class RabbitMQConfig {
             JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
-        return configureSizing(factory, 5, 10, 1);
+        return configureSizing(factory,
+                rabbitMQListenerFactoryProperties.getHigh().getConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getHigh().getMaxConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getHigh().getPreFetchCount());
     }
 
     @Bean
@@ -153,7 +160,10 @@ public class RabbitMQConfig {
             JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
-        return configureSizing(factory, 2, 5, 5);
+        return configureSizing(factory,
+                rabbitMQListenerFactoryProperties.getMedium().getConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getMedium().getMaxConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getMedium().getPreFetchCount());
     }
 
     @Bean
@@ -162,7 +172,10 @@ public class RabbitMQConfig {
             JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
-        return configureSizing(factory, 1, 2, 20);
+        return configureSizing(factory,
+                rabbitMQListenerFactoryProperties.getLow().getConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getLow().getMaxConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getLow().getPreFetchCount());
     }
 
     private SimpleRabbitListenerContainerFactory createBasicFactory(
