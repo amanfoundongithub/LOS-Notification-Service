@@ -1,6 +1,6 @@
 package com.loan_org.notification_service.amqp;
 
-import com.loan_org.notification_service.config.RabbitMQConfig;
+import com.loan_org.notification_service.config.properties.RabbitMQTopologyProperties;
 import com.loan_org.notification_service.dto.NotificationRequest;
 import com.loan_org.notification_service.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class NotificationMessageConsumer {
     private final NotificationService notificationService;
 
     @RabbitListener(
-            queues = RabbitMQConfig.HIGH_PRIORITY_QUEUE,
+            queues = RabbitMQTopologyProperties.HIGH_PRIORITY_QUEUE,
             containerFactory = "highPriorityListenerFactory"
     )
     public void consumeHighPriorityMessage(NotificationRequest message) {
@@ -24,7 +24,7 @@ public class NotificationMessageConsumer {
     }
 
     @RabbitListener(
-            queues = RabbitMQConfig.DEFAULT_PRIORITY_QUEUE,
+            queues = RabbitMQTopologyProperties.DEFAULT_PRIORITY_QUEUE,
             containerFactory = "defaultPriorityListenerFactory"
     )
     public void consumeMediumPriorityMessage(NotificationRequest message) {
@@ -32,7 +32,7 @@ public class NotificationMessageConsumer {
     }
 
     @RabbitListener(
-            queues = RabbitMQConfig.BULK_PRIORITY_QUEUE,
+            queues = RabbitMQTopologyProperties.BULK_PRIORITY_QUEUE,
             containerFactory = "bulkPriorityListenerFactory"
     )
     public void consumeLowPriorityMessage(NotificationRequest message) {
