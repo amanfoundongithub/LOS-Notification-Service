@@ -46,11 +46,17 @@ spring:
   thymeleaf:
     check-template-location: false
 
+# Interceptor related configurations
 interceptor:
   mdc:
     trace:
       header: "X-Trace-Id"
       key: "traceId"
+
+# API related
+api:
+  template:
+    base_url: /api/v1/template
 
 # Configure the channels for RabbitMQ listener
 listener:
@@ -70,7 +76,3 @@ listener:
 
 server:
   port: 6300
-
-logging:
-  pattern:
-    console: "{\"timestamp\":\"%d{yyyy-MM-dd HH:mm:ss.SSS}\",\"level\":\"%level\",\"thread\":\"%thread\",\"logger\":\"%logger\",\"message\":\"%msg\",\"traceId\":\"%X{traceId}\"}%n"
