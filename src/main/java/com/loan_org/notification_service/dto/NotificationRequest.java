@@ -1,6 +1,6 @@
 package com.loan_org.notification_service.dto;
 
-import com.loan_org.notification_service.domain.channels.NotificationChannel;
+import com.loan_org.notification_service.domain.delivery.channels.NotificationChannel;
 import com.loan_org.notification_service.shared.model.NotificationPriority;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
