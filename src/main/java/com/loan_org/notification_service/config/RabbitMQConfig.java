@@ -7,9 +7,7 @@ import org.slf4j.MDC;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
-import org.springframework.amqp.support.converter.Jackson2JavaTypeMapper;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -114,12 +112,8 @@ public class RabbitMQConfig {
     // =========================================================================
 
     @Bean
-    public Jackson2JsonMessageConverter consumerJackson2MessageConverter() {
-        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
-        DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
-        typeMapper.setTypePrecedence(Jackson2JavaTypeMapper.TypePrecedence.INFERRED);
-        converter.setJavaTypeMapper(typeMapper);
-        return converter;
+    public JacksonJsonMessageConverter consumerJackson2MessageConverter() {
+        return new JacksonJsonMessageConverter();
     }
 
     @Bean
@@ -147,7 +141,7 @@ public class RabbitMQConfig {
     @Bean
     public SimpleRabbitListenerContainerFactory highPriorityListenerFactory(
             ConnectionFactory connectionFactory,
-            Jackson2JsonMessageConverter converter,
+            JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
         return configureSizing(factory, 5, 10, 1);
@@ -156,7 +150,7 @@ public class RabbitMQConfig {
     @Bean
     public SimpleRabbitListenerContainerFactory defaultPriorityListenerFactory(
             ConnectionFactory connectionFactory,
-            Jackson2JsonMessageConverter converter,
+            JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
         return configureSizing(factory, 2, 5, 5);
@@ -165,7 +159,7 @@ public class RabbitMQConfig {
     @Bean
     public SimpleRabbitListenerContainerFactory bulkPriorityListenerFactory(
             ConnectionFactory connectionFactory,
-            Jackson2JsonMessageConverter converter,
+            JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
         return configureSizing(factory, 1, 2, 20);
@@ -173,7 +167,7 @@ public class RabbitMQConfig {
 
     private SimpleRabbitListenerContainerFactory createBasicFactory(
             ConnectionFactory connectionFactory,
-            Jackson2JsonMessageConverter converter,
+            JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
