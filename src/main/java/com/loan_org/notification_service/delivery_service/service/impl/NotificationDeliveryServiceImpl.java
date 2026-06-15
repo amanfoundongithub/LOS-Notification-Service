@@ -1,10 +1,10 @@
-package com.loan_org.notification_service.service.impl;
+package com.loan_org.notification_service.delivery_service.service.impl;
 
-import com.loan_org.notification_service.domain.audit.NotificationLogDocument;
-import com.loan_org.notification_service.domain.audit.NotificationLogService;
-import com.loan_org.notification_service.domain.channels.NotificationDispatcher;
-import com.loan_org.notification_service.dto.NotificationRequest;
-import com.loan_org.notification_service.service.NotificationService;
+import com.loan_org.notification_service.domain.audit.entity.NotificationLogDocument;
+import com.loan_org.notification_service.domain.audit.service.NotificationLogService;
+import com.loan_org.notification_service.domain.delivery.NotificationDispatcher;
+import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
+import com.loan_org.notification_service.delivery_service.service.NotificationDeliveryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class NotificationServiceImpl implements NotificationService {
+public class NotificationDeliveryServiceImpl implements NotificationDeliveryService {
 
     private final NotificationLogService logService;
     private final NotificationDispatcher dispatcher;
@@ -21,7 +21,7 @@ public class NotificationServiceImpl implements NotificationService {
     private static final double BACKOFF_MULTIPLIER = 2.0;
 
     @Override
-    public void execute(NotificationRequest request) {
+    public void execute(NotificationDeliveryRequest request) {
 
         log.info("[SERVICE][START] Starting request to trigger notification from channel {} using " +
                         "template {}.",
@@ -48,7 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
 
                 log.info("[SERVICE][EXECUTE] Routing delivery request to dispatcher. Attempt: {}/{}",
                         currentAttempts + 1, maxAttempts + 1);
-                String providerRefId = dispatcher.routeAndDispatch(request);
+                String providerRefId = dispatcher.dispatch(request);
 
                 logService.updateStatusToSent(logEntry.getId(), providerRefId);
                 log.info("[SERVICE][SUCCESS] Notification processed cleanly on attempt count index: {}", currentAttempts);

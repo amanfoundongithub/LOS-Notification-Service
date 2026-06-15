@@ -1,8 +1,8 @@
 package com.loan_org.notification_service.domain.delivery.channels.impl;
 
 import com.loan_org.notification_service.domain.delivery.channels.NotificationChannel;
-import com.loan_org.notification_service.dto.NotificationRequest;
-import com.loan_org.notification_service.dto.RenderedEmail;
+import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
+import com.loan_org.notification_service.domain.template.dto.RenderedEmail;
 import com.loan_org.notification_service.domain.template.service.NotificationTemplateRenderingService;
 import com.loan_org.notification_service.domain.delivery.channels.NotificationChannelHandler;
 import com.loan_org.notification_service.shared.exception.channel.EmailDeliveryFailureException;
@@ -27,7 +27,7 @@ public class EmailNotificationChannelHandler implements NotificationChannelHandl
     private String fromEmail;
 
     @Override
-    public String dispatch(NotificationRequest request) {
+    public String dispatch(NotificationDeliveryRequest request) {
         log.info("Starting email dispatch service via SMTP. Recipient: {}",
                 MaskingUtil.maskRecipient(request.getRecipient(), request.getChannel()));
 

@@ -4,7 +4,7 @@ import com.loan_org.notification_service.shared.model.NotificationStatus;
 import com.loan_org.notification_service.domain.audit.entity.NotificationLogDocument;
 import com.loan_org.notification_service.domain.audit.repository.NotificationLogRepository;
 import com.loan_org.notification_service.domain.audit.service.NotificationLogService;
-import com.loan_org.notification_service.dto.NotificationRequest;
+import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
 import com.loan_org.notification_service.shared.exception.mongo.RecordNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class NotificationLogServiceImpl implements NotificationLogService {
     private final NotificationLogRepository logRepository;
 
     @Override
-    public NotificationLogDocument createRecord(NotificationRequest request) {
+    public NotificationLogDocument createRecord(NotificationDeliveryRequest request) {
         NotificationLogDocument logEntry = NotificationLogDocument.builder()
                 .userId(request.getUserId())
                 .transactionId(request.getTransactionId())

@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.dto;
+package com.loan_org.notification_service.delivery_service.dto;
 
 import com.loan_org.notification_service.domain.delivery.channels.NotificationChannel;
 import com.loan_org.notification_service.shared.model.NotificationPriority;
@@ -15,7 +15,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationRequest {
+public class NotificationDeliveryRequest {
 
     private String userId;
 

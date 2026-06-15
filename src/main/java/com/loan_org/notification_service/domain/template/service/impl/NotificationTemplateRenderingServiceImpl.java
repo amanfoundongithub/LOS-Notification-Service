@@ -4,7 +4,7 @@ import com.loan_org.notification_service.config.ThymeLeafMongoConfig;
 import com.loan_org.notification_service.domain.template.entity.NotificationTemplateDocument;
 import com.loan_org.notification_service.domain.template.repository.NotificationTemplateRepository;
 import com.loan_org.notification_service.domain.template.service.NotificationTemplateRenderingService;
-import com.loan_org.notification_service.dto.RenderedEmail;
+import com.loan_org.notification_service.domain.template.dto.RenderedEmail;
 import com.loan_org.notification_service.shared.exception.template.TemplateCompilationFailedException;
 import com.loan_org.notification_service.shared.exception.template.TemplateNotFoundException;
 import lombok.extern.slf4j.Slf4j;
