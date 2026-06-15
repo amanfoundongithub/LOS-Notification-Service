@@ -1,5 +1,6 @@
-package com.loan_org.notification_service.domain.template;
+package com.loan_org.notification_service.domain.template.repository;
 
+import com.loan_org.notification_service.domain.template.entity.NotificationTemplateDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 

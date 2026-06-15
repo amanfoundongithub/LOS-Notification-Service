@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.dto;
+package com.loan_org.notification_service.domain.template.dto;
 
 public record RenderedEmail(
         String subject,

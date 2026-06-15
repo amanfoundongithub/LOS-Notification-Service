@@ -1,8 +1,8 @@
-package com.loan_org.notification_service.domain.channels.impl;
+package com.loan_org.notification_service.domain.dispatcher.impl;
 
-import com.loan_org.notification_service.domain.channels.NotificationChannelHandler;
-import com.loan_org.notification_service.domain.channels.NotificationDispatcher;
-import com.loan_org.notification_service.dto.NotificationRequest;
+import com.loan_org.notification_service.domain.dispatcher.channels.NotificationChannelHandler;
+import com.loan_org.notification_service.domain.dispatcher.NotificationDispatcher;
+import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
 import com.loan_org.notification_service.shared.exception.channel.ChannelNotPresentException;
 import com.loan_org.notification_service.shared.exception.channel.ChannelNotSupportedException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class NotificationDispatcherImpl implements NotificationDispatcher {
     /**
      * Routes the fully compiled message to its matching infrastructure gateway provider.
      */
-    public String routeAndDispatch(NotificationRequest request) {
+    public String dispatch(NotificationDeliveryRequest request) {
         if(request.getChannel() == null) {
             log.error("[DISPATCHER][ERROR] Inbound delivery payload missing target channel token.");
             throw new ChannelNotPresentException();

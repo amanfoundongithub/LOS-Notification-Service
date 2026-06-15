@@ -1,6 +1,6 @@
 package com.loan_org.notification_service.shared.util;
 
-import com.loan_org.notification_service.domain.channels.NotificationChannel;
+import com.loan_org.notification_service.domain.dispatcher.channels.NotificationChannel;
 
 public class MaskingUtil {
 

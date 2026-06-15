@@ -1,8 +1,6 @@
 package com.loan_org.notification_service.config.properties;
 
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 public class RabbitMQTopologyProperties {
 
     private RabbitMQTopologyProperties() {

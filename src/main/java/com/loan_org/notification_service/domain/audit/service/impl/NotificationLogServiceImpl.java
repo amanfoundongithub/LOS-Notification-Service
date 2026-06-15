@@ -1,10 +1,10 @@
-package com.loan_org.notification_service.domain.audit.impl;
+package com.loan_org.notification_service.domain.audit.service.impl;
 
 import com.loan_org.notification_service.shared.model.NotificationStatus;
-import com.loan_org.notification_service.domain.audit.NotificationLogDocument;
-import com.loan_org.notification_service.domain.audit.NotificationLogRepository;
-import com.loan_org.notification_service.domain.audit.NotificationLogService;
-import com.loan_org.notification_service.dto.NotificationRequest;
+import com.loan_org.notification_service.domain.audit.entity.NotificationLogDocument;
+import com.loan_org.notification_service.domain.audit.repository.NotificationLogRepository;
+import com.loan_org.notification_service.domain.audit.service.NotificationLogService;
+import com.loan_org.notification_service.delivery_service.dto.NotificationDeliveryRequest;
 import com.loan_org.notification_service.shared.exception.mongo.RecordNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-@Slf4j
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class NotificationLogServiceImpl implements NotificationLogService {
 
     private final NotificationLogRepository logRepository;
 
     @Override
-    public NotificationLogDocument createRecord(NotificationRequest request) {
+    public NotificationLogDocument createRecord(NotificationDeliveryRequest request) {
         NotificationLogDocument logEntry = NotificationLogDocument.builder()
                 .userId(request.getUserId())
                 .transactionId(request.getTransactionId())
@@ -41,16 +41,15 @@ public class NotificationLogServiceImpl implements NotificationLogService {
                 .orElseThrow(() -> new RecordNotFoundException("notificationLogs", id));
     }
 
-    // FIX: Changed return type from void to NotificationLogDocument
     @Override
     public NotificationLogDocument updateRetryTelemetry(String id, int currentRetryCount, long upcomingDelayMs) {
         return logRepository.findById(id)
-                .map(record -> {
-                    record.setRetryCount(currentRetryCount);
-                    record.setNextRetryAt(Instant.now().plusMillis(upcomingDelayMs));
-                    record.setStatus(NotificationStatus.PENDING);
-                    NotificationLogDocument updatedRecord = logRepository.save(record);
-                    log.debug("[AUDIT][TELEMETRY] Incremented retry metrics count to {} for MongoID: {}", currentRetryCount, id);
+                .map(notificationLog -> {
+                    notificationLog.setRetryCount(currentRetryCount);
+                    notificationLog.setNextRetryAt(Instant.now().plusMillis(upcomingDelayMs));
+                    notificationLog.setStatus(NotificationStatus.PENDING);
+                    NotificationLogDocument updatedRecord = logRepository.save(notificationLog);
+                    log.debug("Retry updated to: {} in MongoDB with id: {}", currentRetryCount, id);
                     return updatedRecord;
                 })
                 .orElseThrow(() -> new RecordNotFoundException("notificationLogs", id));
@@ -58,23 +57,23 @@ public class NotificationLogServiceImpl implements NotificationLogService {
 
     @Override
     public void updateStatusToSent(String id, String providerRefId) {
-        logRepository.findById(id).ifPresent(record -> {
-            record.setStatus(NotificationStatus.DELIVERED);
-            record.setSentAt(Instant.now());
-            record.setProviderReferenceId(providerRefId);
-            record.setNextRetryAt(null);
-            logRepository.save(record);
+        logRepository.findById(id).ifPresent(notificationLog -> {
+            notificationLog.setStatus(NotificationStatus.DELIVERED);
+            notificationLog.setSentAt(Instant.now());
+            notificationLog.setProviderReferenceId(providerRefId);
+            notificationLog.setNextRetryAt(null);
+            logRepository.save(notificationLog);
         });
     }
 
     @Override
     public void updateStatusToFailed(String id, Exception exception) {
-        logRepository.findById(id).ifPresent(record -> {
-            record.setStatus(NotificationStatus.FAILED);
-            record.setNextRetryAt(null);
-            record.setErrorCode(exception.getClass().getSimpleName());
-            record.setErrorMessage(exception.getMessage() != null ? exception.getMessage() : "No detailed diagnostic payload provided.");
-            logRepository.save(record);
+        logRepository.findById(id).ifPresent(notificationLog -> {
+            notificationLog.setStatus(NotificationStatus.FAILED);
+            notificationLog.setNextRetryAt(null);
+            notificationLog.setErrorCode(exception.getClass().getSimpleName());
+            notificationLog.setErrorMessage(exception.getMessage() != null ? exception.getMessage() : "No detailed diagnostic payload provided.");
+            logRepository.save(notificationLog);
         });
     }
 }

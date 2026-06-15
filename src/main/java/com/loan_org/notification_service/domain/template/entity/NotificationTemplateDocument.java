@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.domain.template;
+package com.loan_org.notification_service.domain.template.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
