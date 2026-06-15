@@ -1,5 +1,7 @@
 package com.loan_org.notification_service.config;
 
+import com.loan_org.notification_service.config.properties.RabbitMQListenerFactoryProperties;
+import com.loan_org.notification_service.config.properties.RabbitMQTopologyProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -18,25 +20,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RabbitMQConfig {
 
-    // --- Core Exchanges ---
-    public static final String EXCHANGE_NAME = "notification.exchange";
-    public static final String DEAD_LETTER_EXCHANGE = "notification.dlx";
-
-    // --- Core Queues ---
-    public static final String HIGH_PRIORITY_QUEUE = "high-priority.queue";
-    public static final String DEFAULT_PRIORITY_QUEUE = "default-priority.queue";
-    public static final String BULK_PRIORITY_QUEUE = "bulk-priority.queue";
-    public static final String DEAD_LETTER_QUEUE = "notification.dlq";
-
-    // --- Routing Keys ---
-    public static final String ROUTING_KEY_HIGH = "notification.*.high";
-    public static final String ROUTING_KEY_DEFAULT = "notification.*.medium";
-    public static final String ROUTING_KEY_LOW = "notification.*.low";
-    public static final String DEAD_LETTER_ROUTING_KEY = "notification.dlq.routing-key";
-
-    // --- RabbitMQ Argument Keys ---
-    private static final String X_DEAD_LETTER_EXCHANGE = "x-dead-letter-exchange";
-    private static final String X_DEAD_LETTER_ROUTING_KEY = "x-dead-letter-routing-key";
+    // --- RabbitMQ Configuration of factory listeners
+    private final RabbitMQListenerFactoryProperties rabbitMQListenerFactoryProperties;
 
     // --- MDC Parameters ---
     public static final String RABBITMQ_MDC_KEY = "traceId";
@@ -48,63 +33,69 @@ public class RabbitMQConfig {
 
     @Bean
     public TopicExchange deadLetterExchange() {
-        return new TopicExchange(DEAD_LETTER_EXCHANGE);
+        return new TopicExchange(RabbitMQTopologyProperties.DEAD_LETTER_EXCHANGE);
     }
 
     @Bean
     public Queue deadLetterQueue() {
-        return QueueBuilder.durable(DEAD_LETTER_QUEUE).build();
+        return QueueBuilder.durable(RabbitMQTopologyProperties.DEAD_LETTER_QUEUE).build();
     }
 
     @Bean
     public Binding deadLetterBinding() {
         return BindingBuilder.bind(deadLetterQueue())
                 .to(deadLetterExchange())
-                .with(DEAD_LETTER_ROUTING_KEY);
+                .with(RabbitMQTopologyProperties.DEAD_LETTER_ROUTING_KEY);
     }
 
     @Bean
     public TopicExchange mainExchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+        return new TopicExchange(RabbitMQTopologyProperties.EXCHANGE_NAME);
     }
 
     @Bean
     public Queue highPriorityQueue() {
-        return QueueBuilder.durable(HIGH_PRIORITY_QUEUE)
-                .withArgument(X_DEAD_LETTER_EXCHANGE, DEAD_LETTER_EXCHANGE)
-                .withArgument(X_DEAD_LETTER_ROUTING_KEY, DEAD_LETTER_ROUTING_KEY)
+        return QueueBuilder.durable(RabbitMQTopologyProperties.HIGH_PRIORITY_QUEUE)
+                .withArgument(RabbitMQTopologyProperties.X_DEAD_LETTER_EXCHANGE, RabbitMQTopologyProperties.DEAD_LETTER_EXCHANGE)
+                .withArgument(RabbitMQTopologyProperties.X_DEAD_LETTER_ROUTING_KEY, RabbitMQTopologyProperties.DEAD_LETTER_ROUTING_KEY)
                 .build();
     }
 
     @Bean
     public Queue defaultPriorityQueue() {
-        return QueueBuilder.durable(DEFAULT_PRIORITY_QUEUE)
-                .withArgument(X_DEAD_LETTER_EXCHANGE, DEAD_LETTER_EXCHANGE)
-                .withArgument(X_DEAD_LETTER_ROUTING_KEY, DEAD_LETTER_ROUTING_KEY)
+        return QueueBuilder.durable(RabbitMQTopologyProperties.DEFAULT_PRIORITY_QUEUE)
+                .withArgument(RabbitMQTopologyProperties.X_DEAD_LETTER_EXCHANGE, RabbitMQTopologyProperties.DEAD_LETTER_EXCHANGE)
+                .withArgument(RabbitMQTopologyProperties.X_DEAD_LETTER_ROUTING_KEY, RabbitMQTopologyProperties.DEAD_LETTER_ROUTING_KEY)
                 .build();
     }
 
     @Bean
     public Queue bulkPriorityQueue() {
-        return QueueBuilder.durable(BULK_PRIORITY_QUEUE)
-                .withArgument(X_DEAD_LETTER_EXCHANGE, DEAD_LETTER_EXCHANGE)
-                .withArgument(X_DEAD_LETTER_ROUTING_KEY, DEAD_LETTER_ROUTING_KEY)
+        return QueueBuilder.durable(RabbitMQTopologyProperties.BULK_PRIORITY_QUEUE)
+                .withArgument(RabbitMQTopologyProperties.X_DEAD_LETTER_EXCHANGE, RabbitMQTopologyProperties.DEAD_LETTER_EXCHANGE)
+                .withArgument(RabbitMQTopologyProperties.X_DEAD_LETTER_ROUTING_KEY, RabbitMQTopologyProperties.DEAD_LETTER_ROUTING_KEY)
                 .build();
     }
 
     @Bean
     public Binding bindHighPriority() {
-        return BindingBuilder.bind(highPriorityQueue()).to(mainExchange()).with(ROUTING_KEY_HIGH);
+        return BindingBuilder.bind(highPriorityQueue())
+                .to(mainExchange())
+                .with(RabbitMQTopologyProperties.ROUTING_KEY_HIGH);
     }
 
     @Bean
     public Binding bindDefaultPriority() {
-        return BindingBuilder.bind(defaultPriorityQueue()).to(mainExchange()).with(ROUTING_KEY_DEFAULT);
+        return BindingBuilder.bind(defaultPriorityQueue()).
+                to(mainExchange()).
+                with(RabbitMQTopologyProperties.ROUTING_KEY_DEFAULT);
     }
 
     @Bean
     public Binding bindBulkPriority() {
-        return BindingBuilder.bind(bulkPriorityQueue()).to(mainExchange()).with(ROUTING_KEY_LOW);
+        return BindingBuilder.bind(bulkPriorityQueue())
+                .to(mainExchange())
+                .with(RabbitMQTopologyProperties.ROUTING_KEY_LOW);
     }
 
     // =========================================================================
@@ -112,7 +103,7 @@ public class RabbitMQConfig {
     // =========================================================================
 
     @Bean
-    public JacksonJsonMessageConverter consumerJackson2MessageConverter() {
+    public JacksonJsonMessageConverter jacksonJsonMessageConverter() {
         return new JacksonJsonMessageConverter();
     }
 
@@ -144,7 +135,10 @@ public class RabbitMQConfig {
             JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
-        return configureSizing(factory, 5, 10, 1);
+        return configureSizing(factory,
+                rabbitMQListenerFactoryProperties.getHigh().getConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getHigh().getMaxConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getHigh().getPreFetchCount());
     }
 
     @Bean
@@ -153,7 +147,10 @@ public class RabbitMQConfig {
             JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
-        return configureSizing(factory, 2, 5, 5);
+        return configureSizing(factory,
+                rabbitMQListenerFactoryProperties.getMedium().getConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getMedium().getMaxConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getMedium().getPreFetchCount());
     }
 
     @Bean
@@ -162,7 +159,10 @@ public class RabbitMQConfig {
             JacksonJsonMessageConverter converter,
             MethodInterceptor amqpMdcInterceptor) {
         SimpleRabbitListenerContainerFactory factory = createBasicFactory(connectionFactory, converter, amqpMdcInterceptor);
-        return configureSizing(factory, 1, 2, 20);
+        return configureSizing(factory,
+                rabbitMQListenerFactoryProperties.getLow().getConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getLow().getMaxConcurrentConsumers(),
+                rabbitMQListenerFactoryProperties.getLow().getPreFetchCount());
     }
 
     private SimpleRabbitListenerContainerFactory createBasicFactory(

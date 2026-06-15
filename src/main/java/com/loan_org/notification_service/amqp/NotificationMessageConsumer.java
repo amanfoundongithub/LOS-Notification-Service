@@ -1,6 +1,6 @@
 package com.loan_org.notification_service.amqp;
 
-import com.loan_org.notification_service.config.RabbitMQConfig;
+import com.loan_org.notification_service.config.properties.RabbitMQTopologyProperties;
 import com.loan_org.notification_service.dto.NotificationRequest;
 import com.loan_org.notification_service.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -8,55 +8,48 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+import static com.loan_org.notification_service.shared.util.MaskingUtil.maskRecipient;
+
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class NotificationMessageConsumer {
 
     private final NotificationService notificationService;
 
     @RabbitListener(
-            queues = RabbitMQConfig.HIGH_PRIORITY_QUEUE,
+            queues = RabbitMQTopologyProperties.HIGH_PRIORITY_QUEUE,
             containerFactory = "highPriorityListenerFactory"
     )
     public void consumeHighPriorityMessage(NotificationRequest message) {
-        processMessage(message, "HIGH");
+        processMessage(message);
     }
 
     @RabbitListener(
-            queues = RabbitMQConfig.DEFAULT_PRIORITY_QUEUE,
+            queues = RabbitMQTopologyProperties.DEFAULT_PRIORITY_QUEUE,
             containerFactory = "defaultPriorityListenerFactory"
     )
     public void consumeMediumPriorityMessage(NotificationRequest message) {
-        processMessage(message, "DEFAULT");
+        processMessage(message);
     }
 
     @RabbitListener(
-            queues = RabbitMQConfig.BULK_PRIORITY_QUEUE,
+            queues = RabbitMQTopologyProperties.BULK_PRIORITY_QUEUE,
             containerFactory = "bulkPriorityListenerFactory"
     )
     public void consumeLowPriorityMessage(NotificationRequest message) {
-        processMessage(message, "LOW");
+        processMessage(message);
     }
 
-    private void processMessage(NotificationRequest message, String priority) {
-        log.info("[AMQP Ingestion] Received {} notification request. Channel: {}, Template: {}, Recipient: {}",
-                priority,
+    private void processMessage(NotificationRequest message) {
+        log.info("Received notification request to send via channel {} to {}. [Priority: {}]",
                 message.getChannel(),
-                message.getTemplateCode(),
-                maskRecipient(message.getRecipient()));
+                maskRecipient(message.getRecipient(), message.getChannel()),
+                message.getPriority());
         try {
             notificationService.execute(message);
         } catch (Exception e) {
-            log.error("[AMQP ERROR] Route execution failed. Escalating message directly to DLX.", e);
+            log.error("Error during processing of the incoming request. Escalating to Dead-Letter-Queue for admin review.", e);
         }
-    }
-
-    private String maskRecipient(String recipient) {
-        if (recipient == null) return "UNKNOWN";
-        if (recipient.contains("@")) {
-            return recipient.replaceAll("(?<=.).(?=[^@]*?.@)", "*");
-        }
-        return recipient.length() > 4 ? "*".repeat(recipient.length() - 4) + recipient.substring(recipient.length() - 4) : recipient;
     }
 }
