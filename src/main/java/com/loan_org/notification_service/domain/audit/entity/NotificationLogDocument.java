@@ -1,4 +1,4 @@
-package com.loan_org.notification_service.domain.audit;
+package com.loan_org.notification_service.domain.audit.entity;
 
 import com.loan_org.notification_service.domain.channels.NotificationChannel;
 import com.loan_org.notification_service.shared.model.NotificationPriority;
