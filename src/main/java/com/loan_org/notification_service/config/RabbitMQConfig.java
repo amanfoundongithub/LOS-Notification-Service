@@ -103,7 +103,7 @@ public class RabbitMQConfig {
     // =========================================================================
 
     @Bean
-    public JacksonJsonMessageConverter consumerJackson2MessageConverter() {
+    public JacksonJsonMessageConverter jacksonJsonMessageConverter() {
         return new JacksonJsonMessageConverter();
     }
 
