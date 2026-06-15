@@ -46,9 +46,11 @@ spring:
   thymeleaf:
     check-template-location: false
 
-mdc:
-  traceId: "traceId"
-  traceHeader: "X-Trace-Id"
+interceptor:
+  mdc:
+    trace:
+      header: "X-Trace-Id"
+      key: "traceId"
 
 # Configure the channels for RabbitMQ listener
 listener:
