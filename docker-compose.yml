@@ -1,0 +1,41 @@
+name: los_notification_system
+
+services:
+  notification-service:
+    container_name: notification-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "6300:6300"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      notification-db:
+        condition: service_healthy
+    networks:
+      - loan-network
+
+  notification-db:
+    image: mongo:6.0
+    container_name: notification-db-container
+    ports:
+      - "27018:27017"
+    volumes:
+      - notification-mongo-data:/data/db
+    networks:
+      - loan-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  loan-network:
+    name: los-network
+    external: true
+
+volumes:
+  notification-mongo-data:
+    driver: local
