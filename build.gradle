@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.loan_org'
-version = 'NOTIFICATION-SERVICE-SNAPSHOT'
+version = 'Notification-Service-SNAPSHOT'
 
 java {
     toolchain {
