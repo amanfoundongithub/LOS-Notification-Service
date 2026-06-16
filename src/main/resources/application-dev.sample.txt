@@ -1,7 +1,7 @@
-# Email credentials
+MONGO_URI: "mongodb://notification-db-container:27017/user_db"
+RABBITMQ_HOST: "rabbitmq-container"
+RABBITMQ_PORT: 5672
+RABBITMQ_USER:
+RABBITMQ_PASS:
 EMAIL_USERNAME:
 EMAIL_PASSWORD:
-
-# RabbitMQ credentials
-RABBITMQ_USERNAME:
-RABBITMQ_PASSWORD:
