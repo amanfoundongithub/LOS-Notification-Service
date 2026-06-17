@@ -22,6 +22,21 @@ public class TemplateServiceAccessControlImplementation implements TemplateServi
         keyExists(attributes, "notificationTemplate:create");
     }
 
+    @Override
+    public void canRead(Map<String, Object> attributes) {
+        keyExists(attributes, "notificationTemplate:read");
+    }
+
+    @Override
+    public void canUpdate(Map<String, Object> attributes) {
+        keyExists(attributes, "notificationTemplate:update");
+    }
+
+    @Override
+    public void canDelete(Map<String, Object> attributes) {
+        keyExists(attributes, "notificationTemplate:delete");
+    }
+
 
     private void keyExists(Map<String, Object> attributes, String key) {
         if(!attributes.containsKey(key)) {
