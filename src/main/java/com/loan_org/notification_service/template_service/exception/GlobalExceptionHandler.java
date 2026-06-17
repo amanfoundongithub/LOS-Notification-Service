@@ -2,6 +2,7 @@ package com.loan_org.notification_service.template_service.exception;
 
 import com.loan_org.notification_service.shared.exception.AccessForbiddenException;
 import com.loan_org.notification_service.shared.exception.template.TemplateAlreadyExists;
+import com.loan_org.notification_service.shared.exception.template.TemplateNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleAccessForbiddenException(AccessForbiddenException exception) {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(TemplateNotFoundException.class)
+    public ResponseEntity<String> handleTemplateNotFoundException(TemplateNotFoundException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
