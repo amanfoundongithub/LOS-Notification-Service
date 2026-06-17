@@ -11,5 +11,5 @@ import java.lang.annotation.*;
 public @interface ValidHtml {
     String message() default "Invalid HTML structure or syntax detected";
     Class<?>[] groups() default {};
-    Class<? extends Payload>[] classes() default {};
+    Class<? extends Payload>[] payload() default {};
 }
