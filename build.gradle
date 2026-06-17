@@ -35,6 +35,9 @@ dependencies {
     runtimeOnly    'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly    'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
+    // Microservice registration (Netflix Eureka)
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
 
     // Lombok Core
     compileOnly 'org.projectlombok:lombok'
@@ -47,6 +50,12 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2025.1.2"
+    }
 }
 
 tasks.named('test') {
