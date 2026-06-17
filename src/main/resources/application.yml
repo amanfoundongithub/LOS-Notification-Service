@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Notification Service
+    name: notification-service
   profiles:
     active: dev
 
@@ -77,3 +77,9 @@ listener:
 
 server:
   port: 6300
+
+# EUREKA!
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST}:8761/eureka/
