@@ -56,6 +56,9 @@ api:
   template:
     base_url: /api/v1/template
 
+jwt:
+  signing_key: ${JWT_SECRET_KEY}
+
 # Configure the channels for RabbitMQ listener
 listener:
   factory:
