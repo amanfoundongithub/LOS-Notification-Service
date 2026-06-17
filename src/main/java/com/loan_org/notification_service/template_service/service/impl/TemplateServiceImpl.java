@@ -31,6 +31,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         return templateRepository.save(
                 NotificationTemplateDocument.builder()
+                        .id(java.util.UUID.randomUUID().toString())
                         .templateCode(request.templateCode())
                         .subjectLine(request.subjectLine())
                         .htmlContent(request.htmlContent())
