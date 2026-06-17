@@ -54,7 +54,6 @@ public class NotificationTemplateDocument {
     private Instant updatedAt;
 
     @Version
-    @Builder.Default
-    private Long version = 0L;
+    private Long version;
 
 }
