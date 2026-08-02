@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -69,6 +70,12 @@ public class TemplateServiceImpl implements TemplateService {
         }
         return optionalDoc.get();
     }
+
+    @Override
+    public List<NotificationTemplateDocument> findAll() {
+        return templateRepository.findAll();
+    }
+
 
     @Override
     public void deleteTemplate(String templateCode) {
