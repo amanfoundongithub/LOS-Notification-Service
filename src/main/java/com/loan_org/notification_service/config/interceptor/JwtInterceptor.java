@@ -74,6 +74,12 @@ public class JwtInterceptor implements HandlerInterceptor {
                              @NonNull HttpServletResponse response,
                              @NonNull Object handler) throws Exception {
 
+        // 1. Immediately bypass browser CORS preflight OPTIONS requests
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return true;
+        }
+
         response.setContentType(RESPONSE_MEDIA_TYPE);
         response.setCharacterEncoding(RESPONSE_ENCODING);
 
