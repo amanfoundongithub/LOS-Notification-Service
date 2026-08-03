@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -47,6 +49,15 @@ public class TemplateServiceController {
         templateServiceAccessControl.canRead(attributes);
         return ResponseEntity.status(HttpStatus.OK).body(templateService.getTemplate(templateCode));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<NotificationTemplateDocument>> getMethodName(
+            @RequestAttribute("attributes") Map<String, Object> attributes
+    ) {
+        templateServiceAccessControl.canRead(attributes);
+        return ResponseEntity.status(HttpStatus.OK).body(templateService.findAll());
+    }
+    
 
     @DeleteMapping
     public ResponseEntity<Void>  deleteTemplate(
