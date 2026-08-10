@@ -3,7 +3,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN ./gradlew bootJar -x test
+# Use pre-installed gradle instead of wrapper script (./gradlew)
+RUN gradle bootJar -x test
 
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
